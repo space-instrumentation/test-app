@@ -7,6 +7,7 @@ Tf = st.number_input('Feed Temperature:(Eg: 300 Kelvin)')
 Caf = st.number_input('Feed Concentration:(Eg: 1 mol/lit)')
 q = st.number_input('Volumetric Flowrate:(Eg: 100 m^3/hr)')
 V = st.number_input('Volume of Tank:(Eg: 100 m^3)')
+
 def run():
     # mixing model
     def mixer(x,t,Tf,Caf):
@@ -66,12 +67,10 @@ def run():
     tau = (t2 - t1) * 1.5
     print('Tau = {}'.format(round(tau[0][0],3)))
     L = t2 - t1
-
-    print('L = {}'.format(round(L[0][0],3)))
-    print('============FOPDT Model=============')
-    print('e^{}*{}'.format(round(L[0][0],3), dc))
-    print('------------------')
-    print('{}s + 1'.format(round(tau[0][0],3)))
+    f_L = round(L[0][0],3)
+    f_tau = round(tau[0][0],3)
+    st.subheader('FOPDT Model:')
+    st.write('exp^{} * ({} / [{}s + 1])'.format(f_L,dc,f_tau))
 
     a = (dc*L)/tau
     Kp=0.95/a
@@ -82,50 +81,49 @@ def run():
     Kp = Kp[0][0]
     Ki = Ki[0][0]
     Kd = Kd[0][0]
+    
     print('========Estimated Params.============')
     print('Kp = {}'.format(round(Kp,3)))
     print('Ki = {}'.format(round(Ki,3)))
     print('Kd = {}'.format(round(Kd,3)))
     print('===========MATLAB CODE===============')
-    st.subheader('Kp, Ki, Kd Values Obtained by Z-N Tuning')
+    
+    st.subheader('Initial Kp, Ki, Kd Values')
     st.write(round(Kp,3), round(Ki,3), round(Kd,3))
+    st.info('*Copy the code given below and run in MATLAB. Upload the generated Dataset to PID-Tuner*')
+    st.markdown("""
+[PID Tuner](https://pid-tuner.herokuapp.com)
+""")
+    st.write('===================================')
+    st.subheader('MATLAB CODE:')
     st.write('Matlab Code for Dataset Generation:')
-    if st.button('Generate Code'):
-        st.markdown('Creating Code...')
-        st.subheader('MATLAB CODE:')
-        st.write('%Dataset Generation Code%') 
-        st.write('Ki = 0;')
-        st.write('Kp = 0;')
-        st.write('Ki = {};'.format(round(Ki,3)))
-        st.write('Kd = {};'.format(round(Kd,3)))
-        st.write('for Kp = 0:0.01:{}'.format(round(Kp,3)))
-        st.write("s = tf('s');")
-        st.write('Ki_term = Ki*(1/s);')
-        st.write('Kd_term = Kd*s;')
-        st.write("C = Kp + Ki_Term + Kd_Term")
-        st.write("Cl = feedback(C * P,1)")
-        st.write('S = stepinfo(Cl);')
-        st.write('I(n) = S.RiseTime;') 
-        st.write('Q(n) = S.SettlingTime;')
-        st.write('R(n) = S.Overshoot;')
-        st.write('K(n) = Kp;')
-        st.write('n = n + 1;')
-        st.write('end')
-        st.write('RiseTime = I(:);')
-        st.write('SettlingTime = Q(:);')
-        st.write('Overshoot = R(:);')
-        st.write('KpValue = K(:);')
-        st.write('Matrix = [KpValue RiseTime SettlingTime Overshoot]')
-    else:
-        st.info('Code not Generated')
+    st.write('%Dataset Generation Code%') 
+    st.write('Ki = 0;')
+    st.write('Kp = 0;')
+    st.write('Ki = {};'.format(round(Ki,3)))
+    st.write('Kd = {};'.format(round(Kd,3)))
+    st.write('for Kp = 0:0.01:{}'.format(round(Kp,3)))
+    st.write("s = tf('s');")
+    st.write('Ki_term = Ki*(1/s);')
+    st.write('Kd_term = Kd*s;')
+    st.write("C = Kp + Ki_Term + Kd_Term")
+    st.write("Cl = feedback(C * P,1)")
+    st.write('S = stepinfo(Cl);')
+    st.write('I(n) = S.RiseTime;') 
+    st.write('Q(n) = S.SettlingTime;')
+    st.write('R(n) = S.Overshoot;')
+    st.write('K(n) = Kp;')
+    st.write('n = n + 1;')
+    st.write('end')
+    st.write('RiseTime = I(:);')
+    st.write('SettlingTime = Q(:);')
+    st.write('Overshoot = R(:);')
+    st.write('KpValue = K(:);')
+    st.write('Matrix = [KpValue RiseTime SettlingTime Overshoot]')
     
 if st.button('Run'):
     st.markdown('Creating Model...')
     run()
+
 else:
     st.info('Enter data and Run')
-
-
-
-
-
