@@ -96,7 +96,6 @@ def run():
 """)
     st.write('===================================')
     st.subheader('MATLAB CODE:')
-    st.write('Matlab Code for Dataset Generation:')
     st.write('%Dataset Generation Code%') 
     st.write('Ki = 0;')
     st.write('Kp = 0;')
