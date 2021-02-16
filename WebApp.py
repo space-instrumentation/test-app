@@ -8,10 +8,10 @@ st.write ("""
 #  FOPDT Model Generator
 """)
 
-Tf = st.number_input('Feed Temperature:(Eg: 300 Kelvin)', 300)
-Caf = st.number_input('Feed Concentration:(Eg: 1 mol/lit)',1)
-q = st.number_input('Volumetric Flowrate:(Eg: 100 m^3/hr)', 100)
-V = st.number_input('Volume of Tank:(Eg: 100 m^3)', 100)
+Tf = st.number_input('Feed Temperature:(Eg: 300 Kelvin)', 0, 1000, 300)
+Caf = st.number_input('Feed Concentration:(Eg: 1 mol/lit)', 0, 100, 1)
+q = st.number_input('Volumetric Flowrate:(Eg: 100 m^3/hr)', 0, 5000, 100)
+V = st.number_input('Volume of Tank:(Eg: 100 m^3)', 0, 100, 100)
 
 def run():
     # mixing model
